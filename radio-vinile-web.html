@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radio Vinile</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@100;300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   RESET & VARS
+═══════════════════════════════════════ */
+:root {
+  --a:    #C8860A;
+  --al:   #E8A020;
+  --ad:   #8B5E06;
+  --adim: rgba(200,134,10,0.15);
+  --cr:   #F5ECD7;
+  --cr2:  #E8D5B0;
+  --eb:   #120900;
+  --eb2:  #1C0F04;
+  --eb3:  #271508;
+  --mg:   #6B3F12;
+  --gl:   rgba(255,255,255,0.04);
+  --gl2:  rgba(255,255,255,0.07);
+  --bd:   rgba(200,134,10,0.18);
+  --bd2:  rgba(200,134,10,0.30);
+  --t1:   #F5ECD7;
+  --t2:   rgba(245,236,215,0.55);
+  --t3:   rgba(245,236,215,0.28);
+  --live: #E53935;
+  --grn:  #4CAF7D;
+  --blu:  #5B9BD5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--eb);font-family:'Josefin Sans',sans-serif;color:var(--t1);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+input,textarea,button,select{font-family:inherit;}
+
+/* ═══════════════════════════════════════
+   SWITCHER
+═══════════════════════════════════════ */
+.switcher{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  z-index:9999;
+  background:rgba(18,9,0,0.9);
+  border:1px solid var(--bd2);
+  border-radius:40px;
+  padding:5px;
+  display:flex;gap:4px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.6);
+}
+.sw-btn{
+  padding:8px 22px;border-radius:32px;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  border:none;cursor:pointer;transition:all 0.25s;
+  color:var(--t2);background:transparent;
+}
+.sw-btn.active{
+  background:var(--a);color:var(--eb);
+  box-shadow:0 2px 12px rgba(200,134,10,0.4);
+}
+
+/* ═══════════════════════════════════════
+   VIEWS
+═══════════════════════════════════════ */
+.view{display:none;}
+.view.active{display:block;}
+
+/* ═══════════════════════════════════════
+   ██ SITO PUBBLICO
+═══════════════════════════════════════ */
+
+/* NAV */
+.pub-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:72px;
+  background:linear-gradient(to bottom,rgba(18,9,0,0.98),rgba(18,9,0,0.7));
+  border-bottom:1px solid rgba(200,134,10,0.08);
+  backdrop-filter:blur(12px);
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-weight:900;font-size:22px;
+  color:var(--a);letter-spacing:1px;
+}
+.nav-logo span{color:var(--cr);font-weight:400;}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--t2);transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--a);}
+.nav-cta{
+  background:var(--a);color:var(--eb)!important;
+  padding:8px 20px;border-radius:24px;
+  font-weight:700!important;
+  box-shadow:0 2px 12px rgba(200,134,10,0.3);
+}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  padding:120px 48px 80px;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 30%, rgba(60,25,8,0.8), transparent),
+    radial-gradient(ellipse 40% 50% at 15% 70%, rgba(200,134,10,0.06), transparent),
+    radial-gradient(ellipse 40% 50% at 85% 20%, rgba(200,134,10,0.05), transparent);
+}
+/* animated grooves bg */
+.hero-grooves{
+  position:absolute;width:900px;height:900px;
+  border-radius:50%;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:repeating-radial-gradient(
+    circle at center,
+    rgba(200,134,10,0.03) 0,rgba(200,134,10,0.03) 1px,
+    transparent 1px,transparent 14px
+  );
+  animation:slowspin 80s linear infinite;
+}
+@keyframes slowspin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+
+.hero-content{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:80px;max-width:1200px;width:100%;
+}
+.hero-left{}
+.hero-eyebrow{
+  font-size:10px;letter-spacing:5px;color:var(--a);
+  text-transform:uppercase;margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before{
+  content:'';width:32px;height:1px;background:var(--a);
+}
+.hero-h1{
+  font-family:'Playfair Display',serif;
+  font-weight:900;font-size:clamp(52px,6vw,80px);
+  line-height:0.95;margin-bottom:24px;
+  color:var(--cr);
+}
+.hero-h1 em{
+  display:block;font-style:italic;
+  color:var(--a);
+}
+.hero-tagline{
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;font-size:18px;
+  color:var(--t2);line-height:1.7;
+  margin-bottom:36px;max-width:420px;
+}
+.hero-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.btn-primary{
+  background:var(--a);color:var(--eb);
+  padding:14px 32px;border-radius:32px;
+  font-size:11px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;border:none;cursor:pointer;
+  box-shadow:0 4px 24px rgba(200,134,10,0.35);
+  transition:all 0.25s;display:inline-flex;align-items:center;gap:10px;
+}
+.btn-primary:hover{background:var(--al);transform:translateY(-1px);box-shadow:0 8px 32px rgba(200,134,10,0.45);}
+.btn-secondary{
+  border:1px solid var(--bd2);color:var(--cr);
+  padding:14px 28px;border-radius:32px;
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  background:transparent;cursor:pointer;transition:all 0.25s;
+}
+.btn-secondary:hover{border-color:var(--a);color:var(--a);}
+
+/* big vinyl hero */
+.hero-right{display:flex;align-items:center;justify-content:center;}
+.big-vinyl-wrap{position:relative;width:360px;height:360px;}
+.big-vinyl{
+  width:360px;height:360px;border-radius:50%;
+  background:
+    radial-gradient(circle at center, var(--mg) 0%, var(--mg) 28%, transparent 28%),
+    repeating-radial-gradient(circle at center,
+      #0a0401 0,#0a0401 4px,
+      #1c0a03 4px,#1c0a03 7px,
+      #100602 7px,#100602 10px
+    );
+  border:4px solid var(--a);
+  box-shadow:
+    0 0 80px rgba(200,134,10,0.2),
+    0 0 160px rgba(200,134,10,0.08),
+    inset 0 0 40px rgba(0,0,0,0.5);
+  animation:spin 10s linear infinite;
+  position:relative;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.big-vinyl-center{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:100px;height:100px;border-radius:50%;
+  background:var(--eb2);
+  border:3px solid var(--a);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(200,134,10,0.3);
+  z-index:2;
+}
+.vinyl-label-text{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-size:11px;color:var(--a);
+  text-align:center;line-height:1.3;
+}
+/* tonearm */
+.tonearm-hero{
+  position:absolute;top:-10px;right:-20px;
+  width:130px;height:150px;z-index:3;
+}
+
+/* live strip */
+.live-strip{
+  position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);
+  background:rgba(229,57,53,0.12);
+  border:1px solid rgba(229,57,53,0.3);
+  border-radius:32px;padding:8px 20px;
+  display:flex;align-items:center;gap:10px;
+  white-space:nowrap;
+}
+.live-dot-r{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--live);
+  animation:blink 1.4s ease infinite;
+  box-shadow:0 0 8px var(--live);
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.live-strip-text{font-size:10px;letter-spacing:3px;color:var(--live);text-transform:uppercase;}
+.live-strip-song{font-family:'Libre Baskerville',serif;font-style:italic;font-size:13px;color:var(--cr);}
+
+/* PLAYER SECTION */
+.player-section{
+  padding:80px 48px;
+  background:linear-gradient(to bottom, var(--eb), var(--eb2));
+}
+.player-wrap{
+  max-width:900px;margin:0 auto;
+  background:linear-gradient(135deg,#2A1408,#160A02);
+  border:1px solid var(--bd);border-radius:28px;
+  padding:40px;
+  box-shadow:0 40px 80px rgba(0,0,0,0.5);
+  position:relative;overflow:hidden;
+}
+.player-wrap::before{
+  content:'';position:absolute;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,134,10,0.08),transparent);
+  top:-100px;right:-100px;pointer-events:none;
+}
+.player-inner{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;}
+.player-disc{
+  width:160px;height:160px;border-radius:50%;flex-shrink:0;
+  background:repeating-radial-gradient(circle at center,
+    #080300 0,#080300 3px,#150800 3px,#150800 5px,#0a0400 5px,#0a0400 7px);
+  border:3px solid var(--a);
+  display:flex;align-items:center;justify-content:center;
+  animation:spin 8s linear infinite;
+  box-shadow:0 0 40px rgba(200,134,10,0.2);
+}
+.player-disc-c{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--eb2);border:2px solid var(--a);
+  display:flex;align-items:center;justify-content:center;
+}
+.player-disc-hole{width:8px;height:8px;border-radius:50%;background:var(--a);}
+.player-info{}
+.player-now{font-size:9px;letter-spacing:4px;color:var(--a);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.player-now-dot{width:5px;height:5px;border-radius:50%;background:var(--live);animation:blink 1.4s ease infinite;}
+.player-title{font-family:'Playfair Display',serif;font-style:italic;font-size:28px;color:var(--cr);margin-bottom:4px;}
+.player-artist{font-size:12px;letter-spacing:2px;color:var(--a);text-transform:uppercase;margin-bottom:20px;}
+.prog-bg{width:100%;height:3px;background:rgba(255,255,255,0.08);border-radius:3px;cursor:pointer;margin-bottom:6px;position:relative;}
+.prog-fill{width:42%;height:100%;background:linear-gradient(to right,var(--ad),var(--al));border-radius:3px;position:relative;}
+.prog-fill::after{content:'';position:absolute;right:-5px;top:-4px;width:11px;height:11px;border-radius:50%;background:var(--a);box-shadow:0 0 8px var(--a);}
+.prog-times{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);letter-spacing:1px;margin-bottom:20px;}
+.player-controls{display:flex;align-items:center;gap:16px;}
+.pc{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--gl2);border:1px solid var(--bd);
+  color:var(--cr);font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 0.2s;
+}
+.pc:hover{background:var(--adim);border-color:var(--a);}
+.pc-main{
+  width:58px;height:58px;font-size:22px;
+  background:var(--a);border-color:transparent;
+  color:var(--eb);box-shadow:0 4px 20px rgba(200,134,10,0.4);
+}
+.pc-main:hover{background:var(--al);}
+.vol-row{display:flex;align-items:center;gap:10px;margin-top:16px;}
+.vol-icon{font-size:13px;color:var(--t3);}
+.vol-bar{flex:1;height:3px;background:rgba(255,255,255,0.08);border-radius:3px;cursor:pointer;}
+.vol-fill{width:75%;height:100%;background:var(--ad);border-radius:3px;}
+.listener-pill{
+  display:inline-flex;align-items:center;gap:7px;margin-top:14px;
+  background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.2);
+  border-radius:20px;padding:5px 14px;
+  font-size:10px;letter-spacing:2px;color:var(--grn);
+}
+
+/* SCHEDULE */
+.schedule-section{padding:80px 48px;background:var(--eb2);}
+.section-eyebrow{font-size:10px;letter-spacing:5px;color:var(--a);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--bd),transparent);}
+.section-h2{font-family:'Playfair Display',serif;font-style:italic;font-size:42px;color:var(--cr);margin-bottom:48px;}
+.sched-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;max-width:1100px;}
+.sched-card{
+  background:var(--gl);border:1px solid var(--bd);
+  border-radius:18px;padding:20px;
+  transition:all 0.25s;cursor:default;
+}
+.sched-card:hover{border-color:var(--a);background:var(--adim);}
+.sched-card.now{border-color:var(--live);background:rgba(229,57,53,0.05);}
+.sched-time{font-size:11px;letter-spacing:2px;color:var(--a);margin-bottom:6px;}
+.sched-name{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--cr);margin-bottom:4px;}
+.sched-desc{font-size:11px;color:var(--t2);line-height:1.5;}
+.sched-badge{display:inline-block;font-size:9px;letter-spacing:2px;padding:3px 10px;border-radius:10px;text-transform:uppercase;margin-top:10px;}
+.badge-live{background:rgba(229,57,53,0.15);color:var(--live);border:1px solid rgba(229,57,53,0.3);}
+.badge-auto{background:var(--adim);color:var(--a);border:1px solid var(--bd);}
+.badge-now{background:rgba(76,175,125,0.12);color:var(--grn);border:1px solid rgba(76,175,125,0.25);}
+
+/* CHAT pubblico */
+.chat-section{padding:80px 48px;background:var(--eb);}
+.chat-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:1100px;align-items:start;}
+.chat-left h2{font-family:'Playfair Display',serif;font-style:italic;font-size:42px;color:var(--cr);margin-bottom:16px;}
+.chat-left p{font-family:'Libre Baskerville',serif;font-style:italic;font-size:16px;color:var(--t2);line-height:1.7;}
+.chat-box{
+  background:var(--eb2);border:1px solid var(--bd);
+  border-radius:20px;overflow:hidden;
+}
+.chat-box-header{
+  padding:14px 20px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.chat-box-title{font-size:11px;letter-spacing:3px;color:var(--a);text-transform:uppercase;}
+.online-pill{font-size:10px;color:var(--grn);display:flex;align-items:center;gap:6px;}
+.online-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--grn);display:block;}
+.chat-msgs{padding:16px;display:flex;flex-direction:column;gap:10px;min-height:220px;}
+.cmsg{display:flex;gap:10px;}
+.cmsg-av{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;border:1.5px solid var(--bd);
+}
+.cmsg-av.staff{background:var(--adim);border-color:var(--a);}
+.cmsg-body{}
+.cmsg-name{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:3px;}
+.cmsg-name.sn{color:var(--a);}
+.cmsg-bubble{
+  background:var(--gl);border:1px solid var(--bd);
+  border-radius:14px;border-top-left-radius:3px;
+  padding:9px 13px;font-size:13px;color:var(--cr);line-height:1.5;
+}
+.cmsg.staff .cmsg-bubble{background:rgba(200,134,10,0.08);border-color:var(--bd2);}
+.chat-input-row{
+  padding:12px 16px;border-top:1px solid var(--bd);
+  display:flex;gap:10px;
+}
+.chat-pub-input{
+  flex:1;background:var(--gl2);border:1px solid var(--bd);
+  border-radius:24px;padding:10px 16px;
+  font-size:13px;color:var(--cr);outline:none;
+}
+.chat-pub-input::placeholder{color:var(--t3);}
+.chat-send-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--a);border:none;color:var(--eb);
+  font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* FOOTER */
+.pub-footer{
+  padding:60px 48px 40px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;
+  max-width:1200px;margin:0 auto;
+}
+.footer-brand{}
+.footer-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:24px;color:var(--a);margin-bottom:8px;}
+.footer-tagline{font-size:11px;color:var(--t3);letter-spacing:1px;}
+.footer-col h4{font-size:9px;letter-spacing:4px;color:var(--a);text-transform:uppercase;margin-bottom:16px;}
+.footer-col a{display:block;font-size:12px;color:var(--t2);margin-bottom:8px;letter-spacing:1px;transition:color 0.2s;}
+.footer-col a:hover{color:var(--a);}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.05);
+  padding:20px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10px;color:var(--t3);letter-spacing:1px;
+}
+
+/* ═══════════════════════════════════════
+   ██ PANNELLO DJ
+═══════════════════════════════════════ */
+.dj-wrap{min-height:100vh;background:var(--eb);display:flex;flex-direction:column;}
+
+/* DJ Header */
+.dj-header{
+  height:64px;
+  background:rgba(18,9,0,0.98);
+  border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;flex-shrink:0;
+  position:sticky;top:0;z-index:100;
+}
+.dj-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:var(--a);}
+.dj-logo span{color:var(--t2);font-size:11px;letter-spacing:2px;font-style:normal;margin-left:8px;font-family:'Josefin Sans',sans-serif;}
+.dj-status{display:flex;align-items:center;gap:10px;}
+.dj-status-pill{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 16px;border-radius:20px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+}
+.dj-offline{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t2);}
+.dj-live{background:rgba(229,57,53,0.15);border:1px solid rgba(229,57,53,0.4);color:var(--live);}
+.dj-go-btn{
+  background:var(--a);color:var(--eb);
+  border:none;padding:8px 20px;border-radius:20px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  font-weight:700;cursor:pointer;transition:all 0.2s;
+}
+.dj-go-btn:hover{background:var(--al);}
+.dj-go-btn.stop{background:var(--live);}
+
+/* DJ Body */
+.dj-body{
+  flex:1;display:grid;
+  grid-template-columns:340px 1fr 320px;
+  gap:0;
+  height:calc(100vh - 64px);
+}
+
+/* ── LEFT PANEL ── */
+.dj-left{
+  border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.panel-title{
+  padding:16px 20px 12px;
+  font-size:9px;letter-spacing:4px;color:var(--a);
+  text-transform:uppercase;border-bottom:1px solid var(--bd);
+  flex-shrink:0;
+}
+
+/* now on air */
+.on-air-box{
+  background:linear-gradient(135deg,#2A1408,#160A02);
+  margin:14px;border-radius:16px;
+  padding:16px;border:1px solid var(--bd);
+  flex-shrink:0;
+}
+.on-air-label{
+  font-size:9px;letter-spacing:3px;color:var(--live);
+  text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.on-air-disc{
+  width:64px;height:64px;border-radius:50%;
+  background:repeating-radial-gradient(circle at center,
+    #060200 0,#060200 2px,#0f0500 2px,#0f0500 4px);
+  border:2px solid var(--a);margin:0 auto 12px;
+  display:flex;align-items:center;justify-content:center;
+  animation:spin 6s linear infinite;
+}
+.on-air-disc-h{width:8px;height:8px;border-radius:50%;background:var(--a);}
+.on-air-title{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--cr);text-align:center;margin-bottom:3px;}
+.on-air-artist{font-size:10px;letter-spacing:2px;color:var(--a);text-align:center;margin-bottom:14px;}
+.on-air-prog{height:3px;background:rgba(255,255,255,0.08);border-radius:3px;margin-bottom:5px;}
+.on-air-prog-fill{width:45%;height:100%;background:linear-gradient(to right,var(--ad),var(--al));border-radius:3px;}
+.on-air-times{display:flex;justify-content:space-between;font-size:9px;color:var(--t3);}
+.dj-mini-controls{display:flex;justify-content:center;gap:12px;margin-top:14px;}
+.dmc{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--gl2);border:1px solid var(--bd);
+  color:var(--cr);font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 0.2s;
+}
+.dmc:hover{border-color:var(--a);}
+.dmc.main{background:var(--a);color:var(--eb);width:44px;height:44px;font-size:17px;border-color:transparent;}
+
+/* queue */
+.queue-scroll{flex:1;overflow-y:auto;padding:0 14px 14px;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
+.queue-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 8px;border-radius:10px;
+  cursor:pointer;transition:all 0.2s;
+  border:1px solid transparent;
+}
+.queue-item:hover{background:var(--gl2);border-color:var(--bd);}
+.queue-item.playing{background:var(--adim);border-color:var(--bd2);}
+.q-num{font-size:11px;color:var(--t3);width:18px;text-align:center;flex-shrink:0;}
+.q-disc{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  background:repeating-radial-gradient(circle at center,#060200 0,#060200 2px,#0f0500 2px,#0f0500 4px);
+  border:1.5px solid var(--ad);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.q-info{flex:1;min-width:0;}
+.q-title{font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:var(--cr);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.q-artist{font-size:10px;color:var(--t2);}
+.q-year{font-size:10px;color:var(--t3);flex-shrink:0;}
+
+/* ── CENTER PANEL ── */
+.dj-center{
+  display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* tabs */
+.dj-tabs{
+  display:flex;border-bottom:1px solid var(--bd);flex-shrink:0;
+}
+.dj-tab{
+  padding:14px 24px;font-size:10px;letter-spacing:2px;
+  color:var(--t2);cursor:pointer;transition:all 0.2s;
+  text-transform:uppercase;border:none;background:transparent;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  position:relative;
+}
+.dj-tab.active{color:var(--a);border-bottom-color:var(--a);}
+.tab-badge{
+  position:absolute;top:10px;right:8px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--live);color:white;
+  font-size:9px;display:flex;align-items:center;justify-content:center;
+}
+
+.tab-content{display:none;flex:1;overflow-y:auto;padding:20px;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
+.tab-content.active{display:flex;flex-direction:column;gap:12px;}
+
+/* chat DJ view */
+.dj-chat-msg{display:flex;gap:10px;align-items:flex-start;}
+.dj-chat-msg.mine{flex-direction:row-reverse;}
+.dj-av{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  border:1.5px solid var(--bd);background:var(--gl2);
+}
+.dj-av.staff{background:var(--adim);border-color:var(--a);}
+.dj-mb{}
+.dj-mname{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:3px;}
+.dj-mname.sn{color:var(--a);}
+.dj-mbubble{
+  background:var(--gl);border:1px solid var(--bd);
+  border-radius:14px;border-top-left-radius:3px;
+  padding:9px 13px;font-size:13px;color:var(--cr);line-height:1.5;
+  max-width:380px;
+}
+.dj-chat-msg.mine .dj-mbubble{background:var(--adim);border-color:var(--ad);border-radius:14px;border-top-right-radius:3px;}
+.dj-chat-msg.staff .dj-mbubble{background:rgba(200,134,10,0.1);border-color:var(--bd2);}
+.dj-chat-input-row{
+  padding:14px 20px;border-top:1px solid var(--bd);
+  display:flex;gap:10px;flex-shrink:0;
+}
+.dj-cinput{
+  flex:1;background:var(--gl2);border:1px solid var(--bd);
+  border-radius:24px;padding:10px 18px;
+  font-size:13px;color:var(--cr);outline:none;transition:border-color 0.2s;
+}
+.dj-cinput:focus{border-color:var(--a);}
+.dj-csend{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--a);border:none;color:var(--eb);
+  font-size:16px;cursor:pointer;flex-shrink:0;
+}
+
+/* requests */
+.req-card{
+  background:var(--gl);border:1px solid var(--bd);
+  border-radius:14px;padding:14px 16px;
+  transition:all 0.2s;
+}
+.req-card:hover{border-color:var(--bd2);}
+.req-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.req-song{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--cr);}
+.req-artist{font-size:10px;color:var(--t2);margin-top:2px;}
+.req-msg{
+  font-size:12px;color:var(--t2);
+  border-left:2px solid var(--bd2);padding-left:10px;
+  font-style:italic;margin-bottom:10px;line-height:1.5;
+}
+.req-footer{display:flex;justify-content:space-between;align-items:center;}
+.req-by{font-size:10px;color:var(--t3);}
+.req-actions{display:flex;gap:8px;}
+.req-btn{
+  padding:5px 14px;border-radius:10px;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  border:1px solid;cursor:pointer;transition:all 0.2s;
+  background:transparent;
+}
+.req-accept{border-color:rgba(76,175,125,0.4);color:var(--grn);}
+.req-accept:hover{background:rgba(76,175,125,0.12);}
+.req-skip{border-color:rgba(255,255,255,0.1);color:var(--t3);}
+.req-skip:hover{border-color:rgba(229,57,53,0.3);color:var(--live);}
+
+/* microfono */
+.mic-panel{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:24px;padding:40px;
+}
+.mic-circle{
+  width:120px;height:120px;border-radius:50%;
+  background:linear-gradient(135deg,#2A1408,#160A02);
+  border:2px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 0 0 0 rgba(229,57,53,0);
+}
+.mic-circle.hot{
+  border-color:var(--live);
+  box-shadow:0 0 0 12px rgba(229,57,53,0.1),0 0 0 24px rgba(229,57,53,0.05);
+  animation:micpulse 1.5s ease infinite;
+}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 8px rgba(229,57,53,0.12),0 0 0 20px rgba(229,57,53,0.04)}50%{box-shadow:0 0 0 16px rgba(229,57,53,0.08),0 0 0 32px rgba(229,57,53,0.02)}}
+.mic-label{font-size:11px;letter-spacing:3px;color:var(--t2);text-transform:uppercase;}
+.mic-hot-label{font-size:11px;letter-spacing:3px;color:var(--live);text-transform:uppercase;animation:blink 1s ease infinite;}
+.mic-vol{width:200px;}
+.mic-vol-label{font-size:9px;letter-spacing:3px;color:var(--t3);text-transform:uppercase;margin-bottom:8px;text-align:center;}
+.mic-vol-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.mic-vol-fill{height:100%;background:linear-gradient(to right,var(--grn),#8BC34A);border-radius:4px;animation:volanim 0.3s ease infinite alternate;}
+@keyframes volanim{from{width:30%}to{width:70%}}
+.phone-panel{display:flex;flex-direction:column;gap:14px;padding:4px;}
+.phone-call{
+  background:var(--gl);border:1px solid var(--bd);
+  border-radius:14px;padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+}
+.phone-av{width:40px;height:40px;border-radius:50%;background:var(--gl2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.phone-info{flex:1;}
+.phone-name{font-size:13px;color:var(--cr);}
+.phone-num{font-size:10px;color:var(--t3);letter-spacing:1px;}
+.phone-status{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.ph-wait{color:var(--a);}
+.ph-live{color:var(--live);}
+.phone-actions{display:flex;gap:8px;}
+.ph-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:none;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.ph-answer{background:rgba(76,175,125,0.2);color:var(--grn);}
+.ph-onair{background:rgba(229,57,53,0.2);color:var(--live);}
+.ph-decline{background:rgba(255,255,255,0.06);color:var(--t3);}
+.ph-answer:hover{background:rgba(76,175,125,0.3);}
+.ph-onair:hover{background:rgba(229,57,53,0.3);}
+
+/* ── RIGHT PANEL ── */
+.dj-right{
+  border-left:1px solid var(--bd);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.stats-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;padding:14px;flex-shrink:0;
+}
+.stat-box{
+  background:var(--gl);border:1px solid var(--bd);
+  border-radius:12px;padding:12px;
+}
+.stat-val{font-family:'Playfair Display',serif;font-size:24px;color:var(--a);}
+.stat-lbl{font-size:9px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;margin-top:2px;}
+.stat-delta{font-size:10px;color:var(--grn);margin-top:4px;}
+
+/* notifications */
+.notif-scroll{flex:1;overflow-y:auto;padding:0 14px 14px;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
+.notif-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.notif-icon{
+  width:32px;height:32px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.notif-chat{background:rgba(91,155,213,0.1);}
+.notif-req{background:var(--adim);}
+.notif-phone{background:rgba(76,175,125,0.1);}
+.notif-body{}
+.notif-text{font-size:12px;color:var(--cr);line-height:1.4;}
+.notif-time{font-size:10px;color:var(--t3);margin-top:3px;letter-spacing:1px;}
+
+/* stream meter */
+.stream-box{
+  margin:14px;background:var(--gl);
+  border:1px solid var(--bd);border-radius:14px;padding:14px;flex-shrink:0;
+}
+.stream-title{font-size:9px;letter-spacing:3px;color:var(--a);text-transform:uppercase;margin-bottom:12px;}
+.stream-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.stream-key{font-size:11px;color:var(--t2);}
+.stream-val{font-size:11px;color:var(--cr);}
+.stream-bar-wrap{margin-top:8px;}
+.stream-bar-bg{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+.stream-bar-fill{height:100%;border-radius:4px;}
+.s-grn{background:linear-gradient(to right,#388E3C,var(--grn));}
+.s-amb{background:linear-gradient(to right,var(--ad),var(--al));}
+</style>
+</head>
+<body>
+
+<!-- SWITCHER -->
+<div class="switcher">
+  <button class="sw-btn active" onclick="switchView('public')">🌐 Sito Pubblico</button>
+  <button class="sw-btn" onclick="switchView('dj')">🎙️ Pannello DJ</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     SITO PUBBLICO
+══════════════════════════════════════ -->
+<div class="view active" id="view-public">
+
+  <nav class="pub-nav">
+    <div class="nav-logo"><em>Radio</em> <span>VINILE</span></div>
+    <div class="nav-links">
+      <a href="#">Palinsesto</a>
+      <a href="#">Archivio</a>
+      <a href="#">Chi siamo</a>
+      <a href="#" class="nav-cta">📱 Scarica l'App</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grooves"></div>
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-eyebrow">Anni 70 · 80 · 90</div>
+        <h1 class="hero-h1">Radio<em>Vinile</em></h1>
+        <p class="hero-tagline">Il suono che scalda l'anima. Musica autentica, ricordi indimenticabili, direttamente dal solco del vinile.</p>
+        <div class="hero-actions">
+          <button class="btn-primary">▶ Ascolta ora</button>
+          <button class="btn-secondary">Scopri il palinsesto</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="big-vinyl-wrap">
+          <div class="big-vinyl">
+            <div class="big-vinyl-center">
+              <div class="vinyl-label-text">Radio<br>Vinile</div>
+            </div>
+          </div>
+          <!-- tonearm -->
+          <svg class="tonearm-hero" style="position:absolute;top:-8px;right:-18px;" viewBox="0 0 130 150" fill="none">
+            <g transform="rotate(-22,118,14)">
+              <line x1="118" y1="14" x2="18" y2="135" stroke="#C8860A" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="118" cy="14" r="12" fill="#1C0F04" stroke="#C8860A" stroke-width="2"/>
+              <rect x="10" y="128" width="18" height="10" rx="3" fill="#C8860A"/>
+            </g>
+          </svg>
+          <div class="live-strip">
+            <div class="live-dot-r"></div>
+            <span class="live-strip-text">In onda</span>
+            <span class="live-strip-song">Africa — Toto</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYER -->
+  <section class="player-section">
+    <div class="player-wrap" style="max-width:900px;margin:0 auto;">
+      <div class="player-inner">
+        <div class="player-disc">
+          <div class="player-disc-c"><div class="player-disc-hole"></div></div>
+        </div>
+        <div class="player-info">
+          <div class="player-now"><div class="player-now-dot"></div>In onda adesso</div>
+          <div class="player-title">Africa</div>
+          <div class="player-artist">Toto · 1982</div>
+          <div class="prog-bg"><div class="prog-fill"></div></div>
+          <div class="prog-times"><span>1:47</span><span>4:55</span></div>
+          <div class="player-controls">
+            <div class="pc">⏮</div>
+            <div class="pc">♥</div>
+            <div class="pc pc-main">⏸</div>
+            <div class="pc">⏭</div>
+            <div class="pc">⋯</div>
+          </div>
+          <div class="vol-row">
+            <span class="vol-icon">🔈</span>
+            <div class="vol-bar"><div class="vol-fill"></div></div>
+            <span class="vol-icon">🔊</span>
+          </div>
+          <div class="listener-pill">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--grn);display:inline-block;"></span>
+            247 ascoltatori in diretta
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PALINSESTO -->
+  <section class="schedule-section">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-eyebrow">Palinsesto</div>
+      <h2 class="section-h2">Oggi su Radio Vinile</h2>
+      <div class="sched-grid">
+        <div class="sched-card">
+          <div class="sched-time">08:00 — 12:00</div>
+          <div class="sched-name">Mattina con il Vinile</div>
+          <div class="sched-desc">Svegliarsi con i classici. Un mix curato di brani anni 70/80 per iniziare la giornata.</div>
+          <span class="sched-badge badge-auto">Automatica</span>
+        </div>
+        <div class="sched-card">
+          <div class="sched-time">12:00 — 14:00</div>
+          <div class="sched-name">Pausa Anni 90</div>
+          <div class="sched-desc">L'ora di pranzo con il meglio degli anni 90. Eurodance, pop e grunge in rotazione.</div>
+          <span class="sched-badge badge-auto">Automatica</span>
+        </div>
+        <div class="sched-card now">
+          <div class="sched-time">19:00 — 22:00</div>
+          <div class="sched-name">Serata con Marco</div>
+          <div class="sched-desc">Il DJ Marco in diretta con vinili originali, storie e la vostra musica. Chat aperta!</div>
+          <span class="sched-badge badge-now">▶ Ora in onda</span>
+        </div>
+        <div class="sched-card">
+          <div class="sched-time">22:00 — 01:00</div>
+          <div class="sched-name">Notte Soft Rock</div>
+          <div class="sched-desc">Le notti più belle con il soft rock degli anni 70. Per chi non vuole dormire.</div>
+          <span class="sched-badge badge-live">Live</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAT pubblica -->
+  <section class="chat-section">
+    <div class="chat-layout" style="max-width:1100px;margin:0 auto;">
+      <div class="chat-left">
+        <div class="section-eyebrow">Community</div>
+        <h2>Scrivi al DJ,<br><em style="font-family:'Playfair Display',serif;color:var(--a);">siamo in diretta</em></h2>
+        <p style="margin-top:16px;">Chatta con la redazione, richiedi un brano, racconta il tuo ricordo legato a una canzone. Siamo qui.</p>
+        <div style="margin-top:32px;display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--adim);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>
+            <div style="font-size:13px;color:var(--t2);">Richiedi un brano — il DJ potrebbe metterlo in onda</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--adim);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:16px;">📞</div>
+            <div style="font-size:13px;color:var(--t2);">Chiama il +39 02 1234567 — potresti andare in onda</div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-box">
+        <div class="chat-box-header">
+          <div class="chat-box-title">Chat in diretta</div>
+          <div class="online-pill">38 online</div>
+        </div>
+        <div class="chat-msgs">
+          <div class="cmsg staff">
+            <div class="cmsg-av staff">🎙️</div>
+            <div class="cmsg-body">
+              <div class="cmsg-name sn">Marco · DJ</div>
+              <div class="cmsg-bubble">Buonasera a tutti! Questa sera andiamo a fondo negli anni 80 🎶</div>
+            </div>
+          </div>
+          <div class="cmsg">
+            <div class="cmsg-av">😊</div>
+            <div class="cmsg-body">
+              <div class="cmsg-name">Giulia_R</div>
+              <div class="cmsg-bubble">Finalmente! Aspettavo questa serata tutta la settimana ❤️</div>
+            </div>
+          </div>
+          <div class="cmsg">
+            <div class="cmsg-av">🎸</div>
+            <div class="cmsg-body">
+              <div class="cmsg-name">Rocco78</div>
+              <div class="cmsg-bubble">Africa dei Toto è leggendaria, grazie Marco!</div>
+            </div>
+          </div>
+          <div class="cmsg staff">
+            <div class="cmsg-av staff">🎙️</div>
+            <div class="cmsg-body">
+              <div class="cmsg-name sn">Marco · DJ</div>
+              <div class="cmsg-bubble">Ho il vinile originale del 1982 sul piatto stasera 🎯</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-pub-input" type="text" placeholder="Scrivi un messaggio o richiedi un brano...">
+          <button class="chat-send-btn">➤</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div style="background:var(--eb2);padding:60px 48px 0;">
+    <div class="pub-footer">
+      <div class="footer-brand">
+        <div class="footer-logo">Radio Vinile</div>
+        <div class="footer-tagline">Il suono che scalda l'anima</div>
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--gl2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">📘</div>
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--gl2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">📷</div>
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--gl2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">🐦</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Ascolta</h4>
+        <a href="#">Stream in diretta</a>
+        <a href="#">Archivio puntate</a>
+        <a href="#">App iOS & Android</a>
+        <a href="#">Qualità audio</a>
+      </div>
+      <div class="footer-col">
+        <h4>Radio Vinile</h4>
+        <a href="#">Chi siamo</a>
+        <a href="#">Il team</a>
+        <a href="#">Contatti</a>
+        <a href="#">Pubblicità</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Radio Vinile — Il suono che scalda l'anima</span>
+      <span>Privacy · Cookie · Termini</span>
+    </div>
+  </div>
+
+</div><!-- /view-public -->
+
+
+<!-- ══════════════════════════════════════
+     PANNELLO DJ
+══════════════════════════════════════ -->
+<div class="view" id="view-dj">
+<div class="dj-wrap">
+
+  <header class="dj-header">
+    <div class="dj-logo">Radio Vinile <span>Pannello DJ</span></div>
+    <div class="dj-status">
+      <div class="dj-status-pill dj-live" id="dj-status-pill">
+        <div class="live-dot-r"></div>
+        In onda
+      </div>
+      <button class="dj-go-btn stop" id="dj-go-btn" onclick="toggleLive()">⏹ Chiudi diretta</button>
+    </div>
+  </header>
+
+  <div class="dj-body">
+
+    <!-- ── LEFT: Queue ── -->
+    <div class="dj-left">
+      <div class="panel-title">In onda & Coda</div>
+
+      <div class="on-air-box">
+        <div class="on-air-label"><div class="live-dot-r"></div>In onda ora</div>
+        <div class="on-air-disc"><div style="width:10px;height:10px;border-radius:50%;background:var(--a);"></div></div>
+        <div class="on-air-title">Africa</div>
+        <div class="on-air-artist">Toto · 1982</div>
+        <div class="on-air-prog"><div class="on-air-prog-fill"></div></div>
+        <div class="on-air-times"><span>1:47</span><span>4:55</span></div>
+        <div class="dj-mini-controls">
+          <div class="dmc">⏮</div>
+          <div class="dmc main">⏸</div>
+          <div class="dmc">⏭</div>
+          <div class="dmc">🔀</div>
+        </div>
+      </div>
+
+      <div style="padding:10px 14px 6px;font-size:9px;letter-spacing:3px;color:var(--a);text-transform:uppercase;flex-shrink:0;">Prossimi brani</div>
+      <div class="queue-scroll">
+        <div class="queue-item playing">
+          <div class="q-num">▶</div>
+          <div class="q-disc">🎵</div>
+          <div class="q-info"><div class="q-title">Africa</div><div class="q-artist">Toto</div></div>
+          <div class="q-year">1982</div>
+        </div>
+        <div class="queue-item">
+          <div class="q-num">2</div>
+          <div class="q-disc">🎵</div>
+          <div class="q-info"><div class="q-title">Take On Me</div><div class="q-artist">a-ha</div></div>
+          <div class="q-year">1985</div>
+        </div>
+        <div class="queue-item">
+          <div class="q-num">3</div>
+          <div class="q-disc">🎵</div>
+          <div class="q-info"><div class="q-title">Rio</div><div class="q-artist">Duran Duran</div></div>
+          <div class="q-year">1982</div>
+        </div>
+        <div class="queue-item">
+          <div class="q-num">4</div>
+          <div class="q-disc">🎵</div>
+          <div class="q-info"><div class="q-title">Don't You Want Me</div><div class="q-artist">Human League</div></div>
+          <div class="q-year">1981</div>
+        </div>
+        <div class="queue-item">
+          <div class="q-num">5</div>
+          <div class="q-disc">🎵</div>
+          <div class="q-info"><div class="q-title">Total Eclipse of the Heart</div><div class="q-artist">Bonnie Tyler</div></div>
+          <div class="q-year">1983</div>
+        </div>
+        <div class="queue-item">
+          <div class="q-num">6</div>
+          <div class="q-disc">🎵</div>
+          <div class="q-info"><div class="q-title">Come On Eileen</div><div class="q-artist">Dexys Midnight Runners</div></div>
+          <div class="q-year">1982</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CENTER ── -->
+    <div class="dj-center">
+      <div class="dj-tabs">
+        <button class="dj-tab active" onclick="showTab('chat-tab',this)">💬 Chat</button>
+        <button class="dj-tab" onclick="showTab('req-tab',this)" style="position:relative;">
+          🎵 Richieste
+          <span class="tab-badge">3</span>
+        </button>
+        <button class="dj-tab" onclick="showTab('mic-tab',this)">🎙️ Microfono</button>
+        <button class="dj-tab" onclick="showTab('phone-tab',this)" style="position:relative;">
+          📞 Telefonate
+          <span class="tab-badge" style="background:var(--grn);">2</span>
+        </button>
+      </div>
+
+      <!-- CHAT TAB -->
+      <div class="tab-content active" id="chat-tab">
+        <div class="dj-chat-msg staff">
+          <div class="dj-av staff">🎙️</div>
+          <div class="dj-mb"><div class="dj-mname sn">Tu · DJ</div><div class="dj-mbubble">Buonasera a tutti! Questa sera andiamo a fondo negli anni 80 🎶</div></div>
+        </div>
+        <div class="dj-chat-msg">
+          <div class="dj-av">😊</div>
+          <div class="dj-mb"><div class="dj-mname">Giulia_R</div><div class="dj-mbubble">Finalmente! Aspettavo questa serata tutta la settimana ❤️</div></div>
+        </div>
+        <div class="dj-chat-msg">
+          <div class="dj-av">🎸</div>
+          <div class="dj-mb"><div class="dj-mname">Rocco78</div><div class="dj-mbubble">Africa dei Toto è leggendaria, grazie Marco!</div></div>
+        </div>
+        <div class="dj-chat-msg">
+          <div class="dj-av">🌙</div>
+          <div class="dj-mb"><div class="dj-mname">Silvia_M</div><div class="dj-mbubble">Ascolto mentre cucino, atmosfera perfetta ✨</div></div>
+        </div>
+        <div class="dj-chat-msg mine">
+          <div class="dj-av staff">🎙️</div>
+          <div class="dj-mb"><div class="dj-mbubble">Ho il vinile originale del 1982 sul piatto stasera 🎯</div></div>
+        </div>
+        <div class="dj-chat-msg">
+          <div class="dj-av">👋</div>
+          <div class="dj-mb"><div class="dj-mname">Giovanni_B</div><div class="dj-mbubble">Marco puoi mettere qualcosa di Duran Duran?</div></div>
+        </div>
+      </div>
+
+      <!-- RICHIESTE TAB -->
+      <div class="tab-content" id="req-tab">
+        <div class="req-card">
+          <div class="req-top">
+            <div><div class="req-song">Rio</div><div class="req-artist">Duran Duran · 1982</div></div>
+            <div style="font-size:10px;color:var(--t3);">19:07</div>
+          </div>
+          <div class="req-msg">"Lo dedico a mia moglie, era la nostra canzone del liceo 💕"</div>
+          <div class="req-footer">
+            <div class="req-by">da Giovanni_B</div>
+            <div class="req-actions">
+              <button class="req-btn req-accept">✓ Metti in coda</button>
+              <button class="req-btn req-skip">Salta</button>
+            </div>
+          </div>
+        </div>
+        <div class="req-card">
+          <div class="req-top">
+            <div><div class="req-song">Total Eclipse of the Heart</div><div class="req-artist">Bonnie Tyler · 1983</div></div>
+            <div style="font-size:10px;color:var(--t3);">19:05</div>
+          </div>
+          <div class="req-msg">"È il mio compleanno oggi, sarebbe un regalo enorme!"</div>
+          <div class="req-footer">
+            <div class="req-by">da Lucia_F</div>
+            <div class="req-actions">
+              <button class="req-btn req-accept">✓ Metti in coda</button>
+              <button class="req-btn req-skip">Salta</button>
+            </div>
+          </div>
+        </div>
+        <div class="req-card">
+          <div class="req-top">
+            <div><div class="req-song">Don't You Want Me</div><div class="req-artist">Human League · 1981</div></div>
+            <div style="font-size:10px;color:var(--t3);">19:01</div>
+          </div>
+          <div class="req-footer">
+            <div class="req-by">da Andrea_V</div>
+            <div class="req-actions">
+              <button class="req-btn req-accept">✓ Metti in coda</button>
+              <button class="req-btn req-skip">Salta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MICROFONO TAB -->
+      <div class="tab-content" id="mic-tab">
+        <div class="mic-panel">
+          <div style="font-size:11px;letter-spacing:3px;color:var(--t2);text-transform:uppercase;">Ingresso analogico attivo</div>
+          <div class="mic-circle hot" id="mic-circle" onclick="toggleMic()">🎙️</div>
+          <div class="mic-hot-label" id="mic-label">● Microfono in onda</div>
+          <div class="mic-vol">
+            <div class="mic-vol-label">Livello ingresso</div>
+            <div class="mic-vol-bar"><div class="mic-vol-fill" id="mic-vol-fill"></div></div>
+          </div>
+          <div style="text-align:center;font-size:12px;color:var(--t2);max-width:280px;line-height:1.6;">
+            Il giradischi e il microfono sono connessi via scheda audio USB. Parla liberamente — gli ascoltatori ti sentono in diretta.
+          </div>
+        </div>
+      </div>
+
+      <!-- TELEFONATE TAB -->
+      <div class="tab-content" id="phone-tab">
+        <div style="font-size:11px;letter-spacing:2px;color:var(--t2);padding:4px 0 12px;">2 chiamate in attesa</div>
+        <div class="phone-panel">
+          <div class="phone-call">
+            <div class="phone-av">👤</div>
+            <div class="phone-info">
+              <div class="phone-name">+39 333 456 7890</div>
+              <div class="phone-num">In attesa · 0:42</div>
+              <div class="phone-status ph-wait">In attesa</div>
+            </div>
+            <div class="phone-actions">
+              <button class="ph-btn ph-answer" title="Rispondi">📞</button>
+              <button class="ph-btn ph-onair" title="Metti in onda">📡</button>
+              <button class="ph-btn ph-decline" title="Rifiuta">✕</button>
+            </div>
+          </div>
+          <div class="phone-call" style="border-color:rgba(229,57,53,0.3);">
+            <div class="phone-av">👤</div>
+            <div class="phone-info">
+              <div class="phone-name">+39 347 891 2345</div>
+              <div class="phone-num">In onda · 1:23</div>
+              <div class="phone-status ph-live">● In onda</div>
+            </div>
+            <div class="phone-actions">
+              <button class="ph-btn ph-decline" title="Chiudi">✕</button>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:var(--gl);border:1px solid var(--bd);border-radius:14px;">
+          <div style="font-size:9px;letter-spacing:3px;color:var(--a);text-transform:uppercase;margin-bottom:8px;">Numero radio</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--cr);">+39 02 1234567</div>
+          <div style="font-size:11px;color:var(--t2);margin-top:4px;">Pubblicato sul sito e nell'app</div>
+        </div>
+      </div>
+
+      <div class="dj-chat-input-row">
+        <input class="dj-cinput" type="text" placeholder="Rispondi in chat...">
+        <button class="dj-csend">➤</button>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: Stats & Notifiche ── -->
+    <div class="dj-right">
+      <div class="panel-title">Statistiche live</div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-val">247</div>
+          <div class="stat-lbl">Ascoltatori</div>
+          <div class="stat-delta">↑ +12 ora</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">38</div>
+          <div class="stat-lbl">In chat</div>
+          <div class="stat-delta">↑ attivi</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">3</div>
+          <div class="stat-lbl">Richieste</div>
+          <div class="stat-delta">in attesa</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">2</div>
+          <div class="stat-lbl">Telefonate</div>
+          <div class="stat-delta">1 in onda</div>
+        </div>
+      </div>
+
+      <div class="stream-box">
+        <div class="stream-title">Stream Status</div>
+        <div class="stream-row"><span class="stream-key">Bitrate</span><span class="stream-val">192 kbps MP3</span></div>
+        <div class="stream-row"><span class="stream-key">Uptime</span><span class="stream-val">2h 14m</span></div>
+        <div class="stream-row"><span class="stream-key">Banda uscita</span><span class="stream-val">47.2 Mbps</span></div>
+        <div class="stream-bar-wrap">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:9px;color:var(--t3);">CPU Liquidsoap</span><span style="font-size:9px;color:var(--t3);">18%</span>
+          </div>
+          <div class="stream-bar-bg"><div class="stream-bar-fill s-grn" style="width:18%"></div></div>
+        </div>
+        <div class="stream-bar-wrap" style="margin-top:8px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:9px;color:var(--t3);">RAM server</span><span style="font-size:9px;color:var(--t3);">52%</span>
+          </div>
+          <div class="stream-bar-bg"><div class="stream-bar-fill s-amb" style="width:52%"></div></div>
+        </div>
+      </div>
+
+      <div class="panel-title" style="border-top:1px solid var(--bd);">Attività recente</div>
+      <div class="notif-scroll">
+        <div class="notif-item">
+          <div class="notif-icon notif-phone">📞</div>
+          <div class="notif-body"><div class="notif-text">Telefonata messa in onda da +39 347...</div><div class="notif-time">19:08</div></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon notif-req">🎵</div>
+          <div class="notif-body"><div class="notif-text">Nuova richiesta: "Rio" da Giovanni_B</div><div class="notif-time">19:07</div></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon notif-chat">💬</div>
+          <div class="notif-body"><div class="notif-text">38 persone attive in chat</div><div class="notif-time">19:06</div></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon notif-req">🎵</div>
+          <div class="notif-body"><div class="notif-text">Richiesta: "Total Eclipse" da Lucia_F</div><div class="notif-time">19:05</div></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon notif-chat">💬</div>
+          <div class="notif-body"><div class="notif-text">Peak ascoltatori: 251 alle 19:00</div><div class="notif-time">19:00</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /dj-body -->
+</div>
+</div><!-- /view-dj -->
+
+<script>
+function switchView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.sw-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.dj-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+let isLive = true;
+function toggleLive() {
+  isLive = !isLive;
+  const pill = document.getElementById('dj-status-pill');
+  const btn = document.getElementById('dj-go-btn');
+  if (isLive) {
+    pill.className = 'dj-status-pill dj-live';
+    pill.innerHTML = '<div class="live-dot-r"></div>In onda';
+    btn.className = 'dj-go-btn stop';
+    btn.textContent = '⏹ Chiudi diretta';
+  } else {
+    pill.className = 'dj-status-pill dj-offline';
+    pill.innerHTML = '⏸ Offline';
+    btn.className = 'dj-go-btn';
+    btn.textContent = '▶ Vai in onda';
+  }
+}
+
+let micHot = true;
+function toggleMic() {
+  micHot = !micHot;
+  const circle = document.getElementById('mic-circle');
+  const label = document.getElementById('mic-label');
+  const volFill = document.getElementById('mic-vol-fill');
+  if (micHot) {
+    circle.classList.add('hot');
+    label.textContent = '● Microfono in onda';
+    label.style.animation = 'blink 1s ease infinite';
+    volFill.style.animation = 'volanim 0.3s ease infinite alternate';
+  } else {
+    circle.classList.remove('hot');
+    label.textContent = 'Microfono spento — clicca per attivare';
+    label.style.animation = 'none';
+    label.style.color = 'var(--t2)';
+    volFill.style.animation = 'none';
+    volFill.style.width = '5%';
+  }
+}
+</script>
+</body>
+</html>
