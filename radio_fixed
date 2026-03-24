@@ -1,0 +1,61 @@
+# ═══════════════════════════════════════════════════
+# RADIO VINILE — Script Liquidsoap v1.0 Rev 1.6 FIXED
+# Supporto: playlist automatica + on-demand + DJ live
+# Fix applicati:
+#   - porta harbor 8001 → 8005 (era occupata da uvicorn)
+#   - log.level alzato a 3 per debug
+#   - telnet server abilitato (porta 1234)
+#   - fallback su anni80 per cartelle 70s e 90s vuote
+#   - mksafe() sul fallback finale
+# ═══════════════════════════════════════════════════
+
+settings.init.allow_root := true
+log.level := 3
+
+# ── Telnet server per monitoraggio runtime ──
+settings.server.telnet := true
+settings.server.telnet.port := 1234
+
+# ── CARTELLE MUSICALI ──
+anni80 = playlist(mode="random", reload=10, "/opt/suimi/radiovinile/music/80s/")
+
+# 70s e 90s sono vuote: fallback trasparente su anni80
+# playlist() su cartella vuota non crasha ma la sorgente
+# non diventa mai "ready", quindi fallback() scatta automaticamente
+anni70_raw = playlist(mode="random", reload=10, "/opt/suimi/radiovinile/music/70s/")
+anni90_raw = playlist(mode="random", reload=10, "/opt/suimi/radiovinile/music/90s/")
+
+anni70 = fallback(track_sensitive=true, [anni70_raw, anni80])
+anni90 = fallback(track_sensitive=true, [anni90_raw, anni80])
+
+# ── Mix per fascia oraria ──
+programma = switch([
+  ({ 6h-12h },  random(weights=[1,1], [anni70, anni80])),
+  ({ 12h-18h }, random(weights=[1,2], [anni80, anni90])),
+  ({ 18h-24h }, random(weights=[1,1,1], [anni70, anni80, anni90])),
+  ({ 0h-6h },   anni70)
+])
+programma = fallback([programma, mksafe(anni80)])
+
+# ── CODA ON-DEMAND ──
+ondemand = request.queue(id="ondemand")
+radio = fallback(track_sensitive=true, [ondemand, programma])
+
+# ── INPUT LIVE DJ (BUTT da Windows) ──
+# FIX: porta corretta 8005 (8001 era occupata da uvicorn/FastAPI)
+live = input.harbor("live", port=8005, password="dj_rv_2026", id="live_dj")
+radio = fallback(track_sensitive=false, [live, radio])
+
+# ── OUTPUT Icecast2 ──
+output.icecast(
+  %mp3(bitrate=192),
+  host="localhost",
+  port=8950,
+  password="rv_source_2026",
+  mount="/stream",
+  name="Radio Vinile",
+  description="Il suono che scalda l'anima",
+  genre="70s 80s 90s",
+  url="https://radiovinile.online",
+  radio
+)
